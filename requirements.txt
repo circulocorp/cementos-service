@@ -1,0 +1,6 @@
+pika
+datetime
+requests
+PydoNovosoft==1.1.7
+logging
+json-logging
