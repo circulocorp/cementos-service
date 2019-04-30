@@ -1,0 +1,24 @@
+version: 0.2
+
+env:
+  variables:
+      AWS_DEFAULT_REGION: "us-east-1"
+      AWS_ACCOUNT_ID: "042469170563"
+      VERSION: 1.0.0
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+  build:
+    commands:
+      - echo Build version $VERSION started on `date`
+      - docker build -t cementos-service:$VERSION .
+      - docker tag cementos-service:$VERSION $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/cementos-service:$VERSION
+      - docker tag cementos-service:$VERSION $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/cementos-service:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/cementos-service:$VERSION
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/cementos-service:latest

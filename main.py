@@ -33,26 +33,44 @@ def fix_data(msg):
     data = json.loads(msg)
     for event in data["events"]:
         camevent = dict()
-        camevent["course"] = event["gpsLocationStampModule"]["course"]
-        camevent["latitude"] = event["gpsTimeStampModule"]["header"]["Latitude"]
-        camevent["longitude"] = event["gpsTimeStampModule"]["header"]["Longitude"]
-        camevent["UnitId"] = event["gpsTimeStampModule"]["header"]["UnitId"]
-        camevent["groundSpeed"] = event["gpsTimeStampModule"]["header"]["Speed"]
-        camevent["utcTimestampSeconds"] = event["gpsTimeStampModule"]["header"]["UtcTimestampSeconds"]
-        camevent["Odometer"] = event["gpsTimeStampModule"]["header"]["Odometer"]
+        if "gpsLocationStampModule" in event:
+            camevent["course"] = event["gpsLocationStampModule"]["course"]
+        else:
+            camevent["course"] = 0
+        camevent["latitude"] = event["header"]["Latitude"]
+        camevent["longitude"] = event["header"]["Longitude"]
+        camevent["UnitId"] = event["header"]["UnitId"]
+        camevent["groundSpeed"] = event["header"]["Speed"]
+        camevent["utcTimestampSeconds"] = event["header"]["UtcTimestampSeconds"]
+        camevent["Odometer"] = event["header"]["Odometer"]
+        camevent["eventType"] = event["header"]["TemplateId"]
+        if camevent["eventType"] == 132:
+            camevent["pumping"] = -1
+        elif camevent["eventType"] == 133:
+            camevent["pumping"] = 1
+        else:
+            camevent["pumping"] = 0
         camevent["client"] = "Cementos"
-        variables = event["gpsTimeStampModule"]["header"]["variablesDumpListModule"]["variables"]
-        camevent["variables"] = variables
-        for vari in variables:
-            if vari["title"] == "Engine Speed":
-                camevent["engineSpeed"] = vari["resultValue"]
-            elif vari["title"] == "Fuel Level":
-                camevent["fuelLevel"] = vari["resultValue"]
-            elif vari["title"] == "Engine Total Fuel Used":
-                camevent["totalUsedFuel"] = vari["resultValue"]
-            elif vari["title"] == "Engine Fuel Rate":
-                camevent["fuelRate"] = vari["resultValue"]
-        resp = requests.post(url+"/api/camevents", json=camevent)
+        if "variablesDumpListModule" in event:
+            variables = event["variablesDumpListModule"]["variables"]
+            camevent["variables"] = json.dumps(variables)
+            for vari in variables:
+                if vari["title"] == "Engine Speed":
+                    camevent["engineSpeed"] = vari["resultValue"]
+                elif vari["title"] == "Fuel Level":
+                    camevent["fuelLevel"] = vari["resultValue"]
+                elif vari["title"] == "Engine Total Fuel Used":
+                    camevent["totalUsedFuel"] = vari["resultValue"]
+                elif vari["title"] == "Engine Fuel Rate":
+                    camevent["fuelRate"] = vari["resultValue"]
+        else:
+            camevent["variables"] = ""
+            camevent["engineSpeed"] = 0
+            camevent["fuelRate"] = 0
+            camevent["totalUsedFuel"] = 0
+            camevent["fuelLevel"] = 0
+
+        resp = requests.post(url+"/api/canevents", json=camevent)
         print(resp)
 
 

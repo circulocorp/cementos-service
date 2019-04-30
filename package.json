@@ -2,7 +2,7 @@
   "name": "cementos-service",
   "version": "1.0.0",
   "description": "Servicio de integracion de eventos Cellocator para cementos",
-  "queue": "camevents",
+  "queue": "canevents",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/circulocorp/cementos-service.git"
@@ -11,8 +11,10 @@
   "license": "ISC",
   "dev": {
 		"API_URL": "http://localhost:8080",
-        "RABBITMQ_URL": "192.168.1.70",
-		"secrets": false
+        "RABBITMQ_URL": "192.168.1.71",
+		"secrets": false,
+        "rabbitmq_user": "admin",
+        "rabbitmq_passw": "admin123"
   },
   "stage": {
 		"API_URL": "http://192.168.1.68:8080",
