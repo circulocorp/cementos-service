@@ -3,6 +3,7 @@ import os
 import pika
 import json
 import json_logging
+import psycopg2 as pg
 import logging
 import sys
 from PydoNovosoft.utils import Utils
@@ -27,6 +28,18 @@ if env_cfg["secrets"]:
 else:
     rabbit_user = env_cfg["rabbitmq_user"]
     rabbit_pass = env_cfg["rabbitmq_passw"]
+
+
+def connect_db():
+    try:
+        pghost = Utils.get_secret("pg_host")
+        pguser = Utils.get_secret("pg_user")
+        pgpass = Utils.get_secret("pg_pass")
+        conn = pg.connect(host=pghost, user=pguser, password=pgpass, port="5432", database="cementos")
+        return conn
+    except (Exception, pg.Error) as error:
+        logger.error("Can't connect to postgres", extra={'error': {"raw": error, "app": config["name"], "label": config["name"]}})
+        return None
 
 
 def fix_data(msg):
@@ -72,6 +85,13 @@ def fix_data(msg):
 
         resp = requests.post(url+"/api/canevents", json=camevent)
         print(resp)
+
+def insert_db(msg):
+    connection = connect_db()
+    with connection:
+        with connection.cursor() as cursor:
+            
+
 
 
 def callback(ch, method, properties, body):
