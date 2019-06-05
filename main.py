@@ -38,7 +38,8 @@ def connect_db():
         conn = pg.connect(host=pghost, user=pguser, password=pgpass, port="5432", database="cementos")
         return conn
     except (Exception, pg.Error) as error:
-        logger.error("Can't connect to postgres", extra={'error': {"raw": error, "app": config["name"], "label": config["name"]}})
+        logger.error("Can't connect to postgres", extra={'error': {"raw": error, "app": config["name"],
+                                                                   "label": config["name"]}})
         return None
 
 
@@ -86,17 +87,45 @@ def fix_data(msg):
         resp = requests.post(url+"/api/canevents", json=camevent)
         print(resp)
 
+
+def insert_string(event):
+    fuelLevel = 0
+    totalUsedFuel = 0
+    fuelRate = 0
+    if "variablesDumpListModule" in event:
+        variables = event["variablesDumpListModule"]["variables"]
+        for vari in variables:
+            if vari["title"] == "Fuel Level":
+                fuelLevel = vari["resultValue"]
+            elif vari["title"] == "Engine Total Fuel Used":
+                totalUsedFuel = vari["resultValue"]
+            elif vari["title"] == "Engine Fuel Rate":
+                fuelRate = vari["resultValue"]
+
+    sql = "INSERT INTO canevents(UnitId,latitude,longitude,groundSpeed,Description,fuelLevel,fuelRate,totalUsedFuel" \
+          "eventType,utcTimestampSeconds) values("+event["header"]["UnitId"]+","+event["header"]["Latitude"]+"" \
+          ","+event["header"]["Longitude"]+","+event["header"]["Speed"]+",'',"+fuelLevel+","+fuelRate+"" \
+          ","+totalUsedFuel+")"
+    return sql
+
+
 def insert_db(msg):
     connection = connect_db()
     with connection:
         with connection.cursor() as cursor:
-            
-
+            data = json.loads(msg)
+            for event in data["events"]:
+                sql = insert_string(event)
+                logger.info("Inserting event",
+                            extra={'props': {"raw": sql, "app": config["name"], "label": config["name"]}})
+                cursor.execute(sql)
+            cursor.commit()
+        connection.close()
 
 
 def callback(ch, method, properties, body):
     logger.info("Reading message", extra={'props': {"raw": body, "app": config["name"], "label": config["name"]}})
-    fix_data(body)
+    insert_db(body)
 
 
 def start():
