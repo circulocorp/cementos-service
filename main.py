@@ -107,7 +107,7 @@ def insert_string(event):
           ' values('+str(event["header"]["UnitId"])+','+str(event["header"]["Latitude"])+'' \
           ','+str(event["header"]["Longitude"])+','+str(event["header"]["Speed"])+'' \
           ','+str(fuelLevel)+','+str(fuelRate)+','+str(totalUsedFuel)+','+str(event["header"]["TemplateId"])+'' \
-          ','++')'
+          ','+str(event["header"]["UtcTimestampSeconds"])+')'
     return sql
 
 
