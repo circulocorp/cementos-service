@@ -122,7 +122,6 @@ def insert_db(msg):
                             extra={'props': {"raw": sql, "app": config["name"], "label": config["name"]}})
                 cursor.execute(sql)
         connection.commit()
-        connection.close()
 
 
 def callback(ch, method, properties, body):
