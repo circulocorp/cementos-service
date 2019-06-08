@@ -89,9 +89,9 @@ def fix_data(msg):
 
 
 def insert_string(event):
-    fuelLevel = ''
-    totalUsedFuel = ''
-    fuelRate = ''
+    fuelLevel = 0
+    totalUsedFuel = 0
+    fuelRate = 0
     if "variablesDumpListModule" in event:
         variables = event["variablesDumpListModule"]["variables"]
         for vari in variables:
@@ -102,10 +102,11 @@ def insert_string(event):
             elif vari["title"] == "Engine Fuel Rate":
                 fuelRate = vari["resultValue"]
 
-    sql = "INSERT INTO canevents(UnitId,latitude,longitude,groundSpeed,Description,fuelLevel,fuelRate,totalUsedFuel" \
-          "eventType,utcTimestampSeconds) values("+event["header"]["UnitId"]+","+event["header"]["Latitude"]+"" \
-          ","+event["header"]["Longitude"]+","+event["header"]["Speed"]+",'',"+fuelLevel+","+fuelRate+","+totalUsedFuel+")"
-    print(sql)
+    sql = "INSERT INTO canevents(UnitId,latitude,longitude,groundSpeed,Description,fuelLevel," \
+          "fuelRate,totalUsedFuel,eventType,utcTimestampSeconds) " \
+          "values("+str(event["header"]["UnitId"])+","+str(event["header"]["Latitude"])+"" \
+          ","+str(event["header"]["Longitude"])+","+str(event["header"]["Speed"])+",''" \
+          ","+str(fuelLevel)+","+str(fuelRate)+","+str(totalUsedFuel)+")"
     return sql
 
 
