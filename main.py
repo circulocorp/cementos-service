@@ -89,9 +89,9 @@ def fix_data(msg):
 
 
 def insert_string(event):
-    fuelLevel = 0
-    totalUsedFuel = 0
-    fuelRate = 0
+    fuelLevel = ''
+    totalUsedFuel = ''
+    fuelRate = ''
     if "variablesDumpListModule" in event:
         variables = event["variablesDumpListModule"]["variables"]
         for vari in variables:
@@ -104,8 +104,8 @@ def insert_string(event):
 
     sql = "INSERT INTO canevents(UnitId,latitude,longitude,groundSpeed,Description,fuelLevel,fuelRate,totalUsedFuel" \
           "eventType,utcTimestampSeconds) values("+event["header"]["UnitId"]+","+event["header"]["Latitude"]+"" \
-          ","+event["header"]["Longitude"]+","+event["header"]["Speed"]+",'',"+fuelLevel+","+fuelRate+"" \
-          ","+totalUsedFuel+")"
+          ","+event["header"]["Longitude"]+","+event["header"]["Speed"]+",'',"+fuelLevel+","+fuelRate+","+totalUsedFuel+")"
+    print(sql)
     return sql
 
 
