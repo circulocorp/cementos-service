@@ -121,7 +121,7 @@ def insert_db(msg):
                 logger.info("Inserting event",
                             extra={'props': {"raw": sql, "app": config["name"], "label": config["name"]}})
                 cursor.execute(sql)
-            cursor.commit()
+        connection.commit()
         connection.close()
 
 
