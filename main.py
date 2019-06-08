@@ -105,7 +105,7 @@ def insert_string(event):
     sql = 'INSERT INTO canevents("UnitId",latitude,longitude,"groundSpeed","Description","fuelLevel",' \
           '"fuelRate","totalUsedFuel","eventType","utcTimestampSeconds")'\
           'values('+str(event["header"]["UnitId"])+','+str(event["header"]["Latitude"])+'' \
-          ','+str(event["header"]["Longitude"])+','+str(event["header"]["Speed"])+',' \
+          ','+str(event["header"]["Longitude"])+','+str(event["header"]["Speed"])+',""' \
           ','+str(fuelLevel)+','+str(fuelRate)+','+str(totalUsedFuel)+')'
     return sql
 

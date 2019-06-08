@@ -4,7 +4,7 @@ env:
   variables:
       AWS_DEFAULT_REGION: "us-east-1"
       AWS_ACCOUNT_ID: "042469170563"
-      VERSION: 1.0.6
+      VERSION: 1.0.7
 phases:
   pre_build:
     commands:
