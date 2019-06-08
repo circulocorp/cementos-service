@@ -106,7 +106,8 @@ def insert_string(event):
           '"fuelRate","totalUsedFuel","eventType","utcTimestampSeconds")'\
           ' values('+str(event["header"]["UnitId"])+','+str(event["header"]["Latitude"])+'' \
           ','+str(event["header"]["Longitude"])+','+str(event["header"]["Speed"])+'' \
-          ','+str(fuelLevel)+','+str(fuelRate)+','+str(totalUsedFuel)+')'
+          ','+str(fuelLevel)+','+str(fuelRate)+','+str(totalUsedFuel)+','+str(event["header"]["TemplateId"])+'' \
+          ','++')'
     return sql
 
 

@@ -1,6 +1,6 @@
 {
   "name": "cementos-service",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Servicio de integracion de eventos Cellocator para cementos",
   "queue": "canevents",
   "repository": {
